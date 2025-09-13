@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Assertions;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class JavaCodeController {
 
     private static final String CLASS_NAME = "Main";
