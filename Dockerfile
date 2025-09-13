@@ -16,8 +16,7 @@ FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y \
     openjdk-17-jdk \
     maven \
-   
-gcc \
+    gcc \
     g++ \
     python3 \
     nodejs \
@@ -28,8 +27,7 @@ gcc \
 WORKDIR /app
 
 # Copy the entire project to the container
-COPY .
-/app
+COPY . /app
 
 # Run Maven to build the application's JAR file and copy dependencies
 RUN mvn clean package -DskipTests
