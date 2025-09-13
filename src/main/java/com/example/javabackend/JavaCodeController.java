@@ -154,13 +154,21 @@ public Map<String, Object> runTestCases(@RequestBody Map<String, Object> request
         
         String classpath = classpathBuilder.toString();
         
-        // Use ProcessBuilder to compile with comprehensive classpath
+        // // Use ProcessBuilder to compile with comprehensive classpath
+        // ProcessBuilder compileProcessBuilder = new ProcessBuilder(
+        //     "javac", 
+        //     "-cp", classpath,
+        //     javaFile.getPath(), 
+        //     testFile.getPath()
+        // );
+
         ProcessBuilder compileProcessBuilder = new ProcessBuilder(
-            "javac", 
+            "javac",
+            "-d", "target/classes",
             "-cp", classpath,
-            javaFile.getPath(), 
+            javaFile.getPath(),
             testFile.getPath()
-        );
+);
         
         Process compileProcess = compileProcessBuilder.start();
         
