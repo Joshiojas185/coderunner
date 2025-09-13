@@ -205,7 +205,16 @@ public Map<String, Object> runTestCases(@RequestBody Map<String, Object> request
         }
         
         // Corrected classpath for test execution
-        String testClasspath = "target/classes" + File.pathSeparator + junitStandaloneJar.getAbsolutePath();
+        // String testClasspath = "target/classes" + File.pathSeparator + junitStandaloneJar.getAbsolutePath();
+        // ProcessBuilder testProcessBuilder = new ProcessBuilder(
+        //     "java",
+        //     "-cp", testClasspath,
+        //     "org.junit.platform.console.ConsoleLauncher",
+        //     "--select-class=" + TEST_CLASS_NAME,
+        //     "--details=summary"
+        // );
+
+           String testClasspath = "." + File.pathSeparator + junitStandaloneJar.getAbsolutePath();
         ProcessBuilder testProcessBuilder = new ProcessBuilder(
             "java",
             "-cp", testClasspath,
