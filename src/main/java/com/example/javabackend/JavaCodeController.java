@@ -205,16 +205,7 @@ public Map<String, Object> runTestCases(@RequestBody Map<String, Object> request
         }
         
         // Corrected classpath for test execution
-        // String testClasspath = "target/classes" + File.pathSeparator + junitStandaloneJar.getAbsolutePath();
-        // ProcessBuilder testProcessBuilder = new ProcessBuilder(
-        //     "java",
-        //     "-cp", testClasspath,
-        //     "org.junit.platform.console.ConsoleLauncher",
-        //     "--select-class=" + TEST_CLASS_NAME,
-        //     "--details=summary"
-        // );
-
-           String testClasspath = "." + File.pathSeparator + junitStandaloneJar.getAbsolutePath();
+        String testClasspath = "target/classes" + File.pathSeparator + junitStandaloneJar.getAbsolutePath();
         ProcessBuilder testProcessBuilder = new ProcessBuilder(
             "java",
             "-cp", testClasspath,
@@ -235,28 +226,42 @@ public Map<String, Object> runTestCases(@RequestBody Map<String, Object> request
         boolean success = testExitCode == 0;
         
         // Simple regex-based parsing of JUnit console output
-        String[] lines = testOutput.split("\n");
-        for (String line : lines) {
-            line = line.trim();
-            if (line.startsWith("[") && line.endsWith("]")) {
-                // Use regex to find number followed by description
-                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\[\\s*(\\d+)\\s+(\\w+)\\s+\\w+\\s*\\]");
-                java.util.regex.Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    int num = Integer.parseInt(matcher.group(1));
-                    String description = matcher.group(2).toLowerCase();
+        // String[] lines = testOutput.split("\n");
+        // for (String line : lines) {
+        //     line = line.trim();
+        //     if (line.startsWith("[") && line.endsWith("]")) {
+        //         // Use regex to find number followed by description
+        //         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\[\\s*(\\d+)\\s+(\\w+)\\s+\\w+\\s*\\]");
+        //         java.util.regex.Matcher matcher = pattern.matcher(line);
+        //         if (matcher.find()) {
+        //             int num = Integer.parseInt(matcher.group(1));
+        //             String description = matcher.group(2).toLowerCase();
                     
-                    if (description.contains("found")) {
-                        total = num;
-                    } else if (description.contains("successful")) {
-                        passed = num;
-                    } else if (description.contains("failed")) {
-                        failed = num;
-                    }
-                }
-            }
-        }
+        //             if (description.contains("found")) {
+        //                 total = num;
+        //             } else if (description.contains("successful")) {
+        //                 passed = num;
+        //             } else if (description.contains("failed")) {
+        //                 failed = num;
+        //             }
+        //         }
+        //     }
+        // }
         
+        String[] lines = testOutput.split("\n");
+for (String line : lines) {
+    String cleanLine = line.replaceAll("[\\[\\]]", "").trim(); // remove [ and ]
+    if (cleanLine.contains("tests found")) {
+        total = extractNumber(cleanLine);
+    } else if (cleanLine.contains("tests successful")) {
+        passed = extractNumber(cleanLine);
+    } else if (cleanLine.contains("tests failed")) {
+        failed = extractNumber(cleanLine);
+    }
+}
+
+
+
         // Add debug information about parsing
         if (total == 0) {
             response.put("debug", Map.of(
