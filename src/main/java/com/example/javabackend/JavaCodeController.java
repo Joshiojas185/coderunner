@@ -400,23 +400,16 @@
 
 package com.example.javabackend;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
-import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
-import org.junit.platform.launcher.Launcher;
-import org.junit.platform.launcher.core.LauncherFactory;
-import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
-import org.junit.platform.launcher.listeners.TestExecutionSummary;
-import org.junit.jupiter.api.Assertions;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api")
@@ -616,6 +609,14 @@ public class JavaCodeController {
         return runCompiledCode("main.cpp", code, "g++ main.cpp -o a.out", "./a.out");
     }
 
+    /**
+     * Health check endpoint to keep the service awake.
+     * Maps to: GET /api/health
+     */
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
+    }
     private String runInterpreter(String fileName, String code, String... command) {
         try {
             try (FileWriter writer = new FileWriter(fileName)) { writer.write(code); }
